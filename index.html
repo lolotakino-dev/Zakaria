@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شاشة التداول المتقدمة - Neon Crypto</title>
+    <title>منصة التحليل المتقدمة - Live Data</title>
     <style>
         :root {
             --bg-color: #080915;
@@ -11,6 +11,7 @@
             --neon-green: #00ffcc;
             --neon-red: #ff0055;
             --neon-blue: #00bfff;
+            --neon-yellow: #ffcc00;
             --text-color: #ffffff;
         }
 
@@ -19,7 +20,7 @@
             color: var(--text-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
 
         .header {
@@ -27,31 +28,29 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--neon-blue);
-            padding-bottom: 15px;
+            padding-bottom: 10px;
             box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
         }
 
-        .title {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            margin: 0;
-        }
+        .title { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); margin: 0; font-size: 20px;}
 
-        /* أزرار التبديل */
         .controls {
-            margin: 20px 0;
+            margin: 15px 0;
             display: flex;
             gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
 
         .btn {
             background: #1a1e3b;
             color: #fff;
             border: 1px solid var(--neon-blue);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            white-space: nowrap;
             transition: all 0.3s ease;
             box-shadow: 0 0 5px var(--neon-blue);
         }
@@ -62,19 +61,22 @@
             box-shadow: 0 0 15px var(--neon-blue);
         }
 
-        /* شبكة العرض */
         .grid {
             display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 20px;
+            grid-template-columns: 2.8fr 1.2fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
         }
 
         .chart-container {
             background: var(--card-bg);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 12px;
-            height: 550px;
-            padding: 10px;
+            height: 580px;
+            padding: 5px;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
         }
 
@@ -85,23 +87,21 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.1);
+            gap: 12px;
         }
 
         .card {
             background: #181c37;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             border-right: 4px solid var(--neon-green);
         }
 
-        .card.sell {
-            border-right-color: var(--neon-red);
-        }
+        .card.sell { border-right-color: var(--neon-red); }
+        .card.yellow { border-right-color: var(--neon-yellow); }
 
-        .card h4 { margin: 0 0 5px 0; color: #aaa; font-size: 14px;}
-        .card .val { font-size: 18px; font-weight: bold; }
+        .card h4 { margin: 0 0 5px 0; color: #aaa; font-size: 13px; }
+        .card .val { font-size: 16px; font-weight: bold; margin-top: 3px; }
 
         .neon-buy { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
         .neon-sell { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); }
@@ -110,62 +110,60 @@
 <body>
 
     <div class="header">
-        <h1 class="title">منصة التحليل والتبديل المتقدمة ⚡</h1>
+        <h1 class="title">منصة التحليل والتنبؤ المباشر ⚡</h1>
         <div id="live-clock" style="color: var(--neon-green)">--:--:--</div>
     </div>
 
-    <!-- أزرار التبديل بين العملات -->
     <div class="controls">
-        <button class="btn active" onclick="changePair('BINANCE:BTCUSDT')">بيتكوين (BTC)</button>
-        <button class="btn" onclick="changePair('BINANCE:ETHUSDT')">إيثريوم (ETH)</button>
-        <button class="btn" onclick="changePair('BINANCE:SOLUSDT')">سولانا (SOL)</button>
-        <button class="btn" onclick="changePair('FX:EURUSD')">اليورو / دولار (EUR/USD)</button>
-        <button class="btn" onclick="changePair('TVC:GOLD')">الذهب (GOLD)</button>
+        <button class="btn active" onclick="changeSymbol('BTCUSDT', 'BINANCE:BTCUSDT')">بيتكوين (BTC)</button>
+        <button class="btn" onclick="changeSymbol('ETHUSDT', 'BINANCE:ETHUSDT')">إيثريوم (ETH)</button>
+        <button class="btn" onclick="changeSymbol('SOLUSDT', 'BINANCE:SOLUSDT')">سولانا (SOL)</button>
+        <button class="btn" onclick="changeSymbol('XRPUSDT', 'BINANCE:XRPUSDT')">ريبل (XRP)</button>
     </div>
 
     <div class="grid">
-        <!-- الشاشة المتقدمة للرسم البياني -->
         <div class="chart-container">
             <div id="tradingview_chart" style="height:100%; width:100%;"></div>
         </div>
 
-        <!-- لوحة المعلومات والتنبؤ والدعم/المقاومة -->
         <div class="info-panel">
-            <div class="card">
-                <h4>التنبوء والاتجاه العام</h4>
-                <div class="val neon-buy" id="signal">شراء قوي (Strong Buy)</div>
-                <small style="color:#888;">نسبة الثقة: 87% بناءً على المؤشرات</small>
+            <div class="card yellow">
+                <h4>التنبوء والاتجاه العام الحقيقي</h4>
+                <div class="val" id="signal-text">جاري التحميل...</div>
+                <small id="signal-desc" style="color:#aaa; font-size:11px;">اعتماداً على التغير والزخم اليومي</small>
             </div>
 
             <div class="card">
-                <h4>مستويات الدعم (Support)</h4>
-                <div class="val neon-buy">S1: <span id="s1">--</span></div>
-                <div class="val neon-buy">S2: <span id="s2">--</span></div>
+                <h4>مستويات الدعم الحقيقية (Support)</h4>
+                <div class="val neon-buy">S1: <span id="s1">0.00</span></div>
+                <div class="val neon-buy">S2: <span id="s2">0.00</span></div>
             </div>
 
             <div class="card sell">
-                <h4>مستويات المقاومة (Resistance)</h4>
-                <div class="val neon-sell">R1: <span id="r1">--</span></div>
-                <div class="val neon-sell">R2: <span id="r2">--</span></div>
+                <h4>مستويات المقاومة الحقيقية (Resistance)</h4>
+                <div class="val neon-sell">R1: <span id="r1">0.00</span></div>
+                <div class="val neon-sell">R2: <span id="r2">0.00</span></div>
             </div>
 
             <div class="card">
-                <h4>بيانات الشمعة اليومية</h4>
-                <div style="font-size:13px; margin-top:5px;">الافتتاح: <b id="open-price">--</b></div>
-                <div style="font-size:13px;">الإغلاق السابق: <b id="close-price">--</b></div>
+                <h4>بيانات الشمعة اليومية الحقيقية</h4>
+                <div style="font-size:13px; margin-top:4px;">الافتتاح: <b id="open-price" style="color:var(--neon-blue)">0.00</b></div>
+                <div style="font-size:13px; margin-top:2px;">أعلى سعر اليوم: <b id="high-price" style="color:var(--neon-green)">0.00</b></div>
+                <div style="font-size:13px; margin-top:2px;">أدنى سعر اليوم: <b id="low-price" style="color:var(--neon-red)">0.00</b></div>
             </div>
         </div>
     </div>
 
-    <!-- تضمين مكتبة الرسم البياني المتقدمة من TradingView -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        let currentSymbol = 'BINANCE:BTCUSDT';
+        let currentApiSymbol = 'BTCUSDT';
+        let currentTvSymbol = 'BINANCE:BTCUSDT';
 
-        function loadChart(symbol) {
+        // 1. تحميل الشاشة المتقدمة مع تفعيل زر المؤشرات والتحليل الفني
+        function loadChart(tvSymbol) {
             new TradingView.widget({
                 "autosize": true,
-                "symbol": symbol,
+                "symbol": tvSymbol,
                 "interval": "D",
                 "timezone": "Etc/UTC",
                 "theme": "dark",
@@ -173,30 +171,93 @@
                 "locale": "ar",
                 "toolbar_bg": "#f1f3f6",
                 "enable_publishing": false,
+                "withdateranges": true,
+                "hide_side_toolbar": false, // أظهر شريط الأدوات الجانبي للرسم
                 "allow_symbol_change": true,
-                "container_id": "tradingview_chart",
-                "studies": [
-                    "RSI@tv-basicstudies",
-                    "MASimple@tv-basicstudies",
-                    "PivotPointsHighLow@tv-basicstudies"
-                ]
+                "details": true, // إظهار التفاصيل والمؤشرات
+                "hotlist": true,
+                "calendar": true,
+                "container_id": "tradingview_chart"
             });
         }
 
-        function changePair(symbol) {
-            currentSymbol = symbol;
-            loadChart(symbol);
-            
-            // تحديث الأزرار
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        // 2. جلب الأسعار الحقيقية وحساب مستويات الدعم والمقاومة بـ Pivot Points
+        async function fetchRealData(symbol) {
+            try {
+                const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+                const data = await response.json();
+
+                const high = parseFloat(data.highPrice);
+                const low = parseFloat(data.lowPrice);
+                const close = parseFloat(data.lastPrice);
+                const open = parseFloat(data.openPrice);
+                const priceChange = parseFloat(data.priceChangePercent);
+
+                // حساب نقطة الارتكاز (Pivot Point)
+                const P = (high + low + close) / 3;
+
+                // حساب S1, S2, R1, R2 الحقيقية بناءً على الشمعة اليومية
+                const r1 = (2 * P) - low;
+                const s1 = (2 * P) - high;
+                const r2 = P + (high - low);
+                const s2 = P - (high - low);
+
+                // تحديث الواجهة بالأرقام الحقيقية
+                document.getElementById('open-price').innerText = open.toFixed(2) + ' $';
+                document.getElementById('high-price').innerText = high.toFixed(2) + ' $';
+                document.getElementById('low-price').innerText = low.toFixed(2) + ' $';
+
+                document.getElementById('r1').innerText = r1.toFixed(2) + ' $';
+                document.getElementById('r2').innerText = r2.toFixed(2) + ' $';
+                document.getElementById('s1').innerText = s1.toFixed(2) + ' $';
+                document.getElementById('s2').innerText = s2.toFixed(2) + ' $';
+
+                // نسبة التنبؤ والاتجاه الحقيقي
+                const signalEl = document.getElementById('signal-text');
+                const signalDesc = document.getElementById('signal-desc');
+
+                if (priceChange > 1.5) {
+                    signalEl.className = 'val neon-buy';
+                    signalEl.innerText = `شراء (Strong Buy) +${priceChange.toFixed(2)}%`;
+                    signalDesc.innerText = `التنبؤ: اتجاه صاعد قوي بناءً على الزخم اليومي.`;
+                } else if (priceChange < -1.5) {
+                    signalEl.className = 'val neon-sell';
+                    signalEl.innerText = `بيع (Strong Sell) ${priceChange.toFixed(2)}%`;
+                    signalDesc.innerText = `التنبؤ: اتجاه هابط حاد، يحبذ الحذر.`;
+                } else {
+                    signalEl.className = 'val';
+                    signalEl.style.color = 'var(--neon-yellow)';
+                    signalEl.innerText = `محايد / تذبذب (${priceChange.toFixed(2)}%)`;
+                    signalDesc.innerText = `التنبؤ: حركة عرضية داخل نطاق الدعم والمقاومة.`;
+                }
+
+            } catch (err) {
+                console.error("خطأ في جلب البيانات الحقيقية:", err);
+            }
         }
 
-        // تشغيل الرسم البياني لأول مرة
-        loadChart(currentSymbol);
+        function changeSymbol(apiSymbol, tvSymbol) {
+            currentApiSymbol = apiSymbol;
+            currentTvSymbol = tvSymbol;
+            
+            loadChart(tvSymbol);
+            fetchRealData(apiSymbol);
 
-        // تحديث الوقت
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+        }
+
+        // تشغيل البداية
+        loadChart(currentTvSymbol);
+        fetchRealData(currentApiSymbol);
+
+        // تحديث البيانات تلقائياً كل 10 ثوانٍ
+        setInterval(() => {
+            fetchRealData(currentApiSymbol);
+        }, 10000);
+
+        // الوقت
         setInterval(() => {
             document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
         }, 1000);
