@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التحليل والمؤشرات البرمجية</title>
+    <title>منصة التداول البرمجية المتقدمة</title>
     <style>
         :root {
             --bg-color: #080915;
@@ -75,7 +75,7 @@
             background: var(--card-bg);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 12px;
-            height: 620px;
+            height: 640px;
             padding: 5px;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
         }
@@ -102,10 +102,9 @@
         .card h4 { margin: 0 0 5px 0; color: #aaa; font-size: 13px; }
         .card .val { font-size: 16px; font-weight: bold; margin-top: 3px; }
 
-        /* محرر الأكواد */
         textarea.code-input {
             width: 100%;
-            height: 140px;
+            height: 120px;
             background: #090b18;
             color: var(--neon-green);
             border: 1px solid var(--neon-blue);
@@ -125,7 +124,7 @@
 <body>
 
     <div class="header">
-        <h1 class="title">منصة التداول البرمجية المتقدمة ⚡</h1>
+        <h1 class="title">منصة التداول والتحليل البرمجي ⚡</h1>
         <div id="live-clock" style="color: var(--neon-green)">--:--:--</div>
     </div>
 
@@ -142,12 +141,11 @@
         </div>
 
         <div class="info-panel">
-            <!-- محرر خوارزميات Pine Script / JavaScript -->
             <div class="card code-card">
                 <h4>💻 محرر خوارزميات (Pine Script / JS)</h4>
                 <textarea id="customCode" class="code-input" placeholder="// اكتب أو الصق كود Pine Script / JS هنا...
 //@version=5
-indicator('My Custom SMC Indicator', overlay=true)
+indicator('My SMC Strategy', overlay=true)
 plot(close)"></textarea>
                 <div style="display: flex; gap: 5px; margin-top: 8px;">
                     <button class="btn" style="flex: 1; padding: 5px; font-size: 11px;" onclick="runCustomScript()">تطبيق الخوارزمية</button>
@@ -189,13 +187,20 @@ plot(close)"></textarea>
                 "theme": "dark",
                 "style": "1",
                 "locale": "ar",
-                "enable_publishing": false,
+                "enable_publishing": true,
                 "withdateranges": true,
                 "hide_side_toolbar": false,
                 "allow_symbol_change": true,
                 "details": true,
                 "hotlist": true,
                 "calendar": true,
+                "studies": [
+                    "STD;MACD",
+                    "STD;RSI"
+                ],
+                "show_popup_button": true,
+                "popup_width": "1000",
+                "popup_height": "650",
                 "container_id": "tradingview_chart"
             });
         }
@@ -242,19 +247,18 @@ plot(close)"></textarea>
             const code = document.getElementById('customCode').value;
             if(!code) return;
             try {
-                // تنفيذ أكواد JavaScript المخصصة محلية
                 const runJS = new Function(code);
                 runJS();
-                document.getElementById('codeStatus').innerText = "تم تشغيل كود JavaScript بنجاح!";
+                document.getElementById('codeStatus').innerText = "تم تشغيل الكود بنجاح!";
             } catch (e) {
-                document.getElementById('codeStatus').innerText = "Pine Script: استخدم زر النسخ للـ TradingView.";
+                document.getElementById('codeStatus').innerText = "Pine Script: استخدم زر النسخ وافتحه في نافذة المؤشرات.";
             }
         }
 
         function copyPineScript() {
             const code = document.getElementById('customCode').value;
             navigator.clipboard.writeText(code);
-            document.getElementById('codeStatus').innerText = "تم نسخ كود Pine Script! يمكنك لصقه في Pine Editor داخل الشارت.";
+            document.getElementById('codeStatus').innerText = "تم نسخ كود Pine Script بنجاح!";
         }
 
         function changeSymbol(apiSymbol, tvSymbol) {
